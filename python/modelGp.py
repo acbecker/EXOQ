@@ -90,8 +90,8 @@ def modelGp(bjd, flux, ferr, ktype, lnamp, lnscale):
 
     ndim = len(params)
     nwalkers = 2 * ndim
-    nburn = 250
-    nstep = 500
+    nburn = 1000
+    nstep = 5000
     p0 = [np.array(np.log(params)) + 1e-8 * np.random.randn(ndim) for i in xrange(nwalkers)]
     sampler = emcee.EnsembleSampler(nwalkers, ndim, lnlike, args=(x,y,dy))
     print("Running burn-in...")
