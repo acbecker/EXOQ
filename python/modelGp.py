@@ -12,13 +12,13 @@ cursor  = db.cursor()
 
 def getKeplerData(kid):
     print "# Reading Database"
-    sql = 'select TIME,PDCSAP_FLUX,PDCSAP_FLUX_ERR from source where KEPLERID = %s and LCFLAG = 1 and PDCSAP_FLUX>0 order by TIME limit 1000' % (kid)
+    sql = 'select TIME,PDCSAP_FLUX,PDCSAP_FLUX_ERR from source where KEPLERID = %s and LCFLAG = 1 and PDCSAP_FLUX>0 order by TIME' % (kid)
     cursor.execute(sql)
     results = cursor.fetchall()
 
-    bjd  = np.array([x[0] for x in results])
-    flux = np.array([x[1] for x in results])
-    ferr = np.array([x[2] for x in results])
+    bjd  = np.array([x[0] for x in results])[1000:3000]
+    flux = np.array([x[1] for x in results])[1000:3000]
+    ferr = np.array([x[2] for x in results])[1000:3000]
 
     return bjd, flux, ferr
 
@@ -27,7 +27,7 @@ def residualPlot(x, y, dy, gp, title, fbase=12):
     fig.subplots_adjust(hspace=0.1)
 
     # Top plot shows data and model
-    xt = np.linspace(min(x), max(x), 1000)
+    xt = np.arange(min(x), max(x), 0.01)
     mut, covt = gp.predict(y, xt)
     std = np.sqrt(np.diag(covt))
     sp1.errorbar(x, y, yerr=dy, fmt="ro", alpha=0.25)
@@ -90,8 +90,8 @@ def modelGp(bjd, flux, ferr, ktype, lnamp, lnscale):
 
     ndim = len(params)
     nwalkers = 2 * ndim
-    nburn = 1000
-    nstep = 5000
+    nburn = 100
+    nstep = 500
     p0 = [np.array(np.log(params)) + 1e-8 * np.random.randn(ndim) for i in xrange(nwalkers)]
     sampler = emcee.EnsembleSampler(nwalkers, ndim, lnlike, args=(x,y,dy))
     print("Running burn-in...")
