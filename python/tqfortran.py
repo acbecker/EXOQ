@@ -1,7 +1,8 @@
 import numpy as np
 import occultquad
 
-def ModLC(timeIn, RpRs, bsq, tR, t0, u1, u2):
+def ModLC(timeIn, RpRs, b, tR, t0, u1, u2):
+    bsq  = b**2
     z0   = np.sqrt(bsq + ((timeIn-t0) / tR)**2)
     nz   = len(timeIn)
     muo1 = np.zeros((nz))
